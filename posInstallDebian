@@ -1,0 +1,673 @@
+#!/bin/bash
+# Prove: posInstallDebian
+# Descricao Curta: Pós instalação do Debian
+# Descrição Longa: Pós instalação do Debian Testing tornado-o híbrido.
+#				   Configura e instala pacotes que faria manualmente.
+# Frequencia: Manualmente
+# Autor: Sérgio Abrantes
+# Contato: sergioabrantes@gmail.com
+# Site: https://github.com/sergioabrantesjunior/posInstallDebian
+# Licença: GPLv3
+# Versao: 1.0.0
+#
+# Exemplo de uso:
+# 		# ./posInstallDebian
+#
+#
+# Histórico:
+#
+#    v1.0.0 2019-12-26, Sérgio Abrantes:
+#       - Versão inicial do script
+
+
+
+# 
+# Variáveis
+#
+
+dirDownload=/tmp
+usuario=sergio
+
+
+ajustaPath() {
+
+echo "PATH="/sbin:/usr/sbin:/bin:/usr/bin:/usr/local/bin:/usr/local/sbin"" >> /etc/environment
+export PATH="/sbin:/usr/sbin:/bin:/usr/bin:/usr/local/bin:/usr/local/sbin"
+
+}
+
+
+ajustaApt() {
+
+if [ -e /etc/apt/apt.conf ]; then
+	cp /etc/apt/apt.conf /etc/apt/apt.conf-original
+else
+	echo 'APT::Default-Release "testing";' > /etc/apt/apt.conf
+fi
+
+
+if [ -e /etc/apt/preferences ]; then
+	cp /etc/apt/preferences /etc/apt/preferences-original
+else
+
+cat >> /etc/apt/preferences << EOF
+Package: *
+Pin: release a=testing
+Pin-Priority:500
+
+Package: *
+Pin: release a=unstable
+Pin-Priority: 400
+
+Package: *
+Pin: release a=experimental
+Pin-Priority: 300
+
+Package: *
+Pin: release a=stable
+Pin-Priority: 200
+
+Package: *
+Pin: release a=oldstable
+Pin-Priority: 100
+
+Package: *
+Pin: release a=jessie
+Pin-Priority: 50
+EOF
+
+fi
+
+}
+
+
+ajustaSources() {
+
+mv /etc/apt/sources.list /etc/apt/sources.list-original
+
+cat >> /etc/apt/sources.list << EOF
+## Testing
+deb http://deb.debian.org/debian/ testing main contrib non-free
+deb-src http://deb.debian.org/debian/ testing main contrib non-free
+
+deb http://security.debian.org/debian-security testing-security main contrib non-free
+deb-src http://security.debian.org/debian-security testing-security main contrib non-free
+
+deb http://deb.debian.org/debian/ testing-updates main contrib non-free
+
+# Debian Jessie (para libs caixa.gov.br)
+# deb http://deb.debian.org/debian/ jessie main contrib non-free
+
+# Debian Stable
+# deb http://deb.debian.org/debian/ stable main contrib non-free
+
+# Debian Unstable
+deb http://deb.debian.org/debian/ unstable main contrib non-free
+
+# Debian Experimental
+deb http://deb.debian.org/debian/ experimental main contrib non-free
+
+# Spotify ok
+deb http://repository.spotify.com stable non-free
+
+# Signal ok
+deb [arch=amd64] https://updates.signal.org/desktop/apt xenial main
+
+# Palemoon ok
+# deb http://download.opensuse.org/repositories/home:/stevenpusser/Debian_Testing/ /
+
+# Debian multimedia ok
+deb https://www.deb-multimedia.org testing main non-free
+
+# Navegador Vivaldi ok
+deb https://repo.vivaldi.com/archive/deb/ stable main
+EOF
+
+}
+
+
+adicionai386() {
+
+dpkg --add-architecture i386
+
+}
+
+
+pacotesBasicos() {
+
+apt update
+
+apt install -y gdebi wget curl p7zip-full p7zip p7zip-rar
+
+# corrigir erro do gdebi
+# /usr/bin/gdebi:113: FutureWarning: Possible nested set at position 1
+# c = findall("[[(](\S+)/\S+[])]", msg)[0].lower()
+sudo sed -i 's|"\[\[.*\]"|"[\\[(](\\S+)/\\S+[\\])]"|' /usr/share/gdebi/gdebi
+sudo sed -i 's|"\[\[.*\]"|"[\\[(](\\S+)/\\S+[\\])]"|' /usr/share/gdebi/GDebi/GDebiCli.py
+
+}
+
+
+baixaChavesPacotesTerceiros() {
+
+cd /tmp
+
+# Signal ok
+curl -s https://updates.signal.org/desktop/apt/keys.asc | sudo apt-key add -
+
+# Palemoon ok
+#wget -nv https://download.opensuse.org/repositories/home:stevenpusser/Debian_Testing/Release.key -O "/etc/apt/trusted.gpg.d/home:stevenpusser.asc"
+
+# Spotify ok
+curl -sS https://download.spotify.com/debian/pubkey.gpg | sudo apt-key add - 
+
+# Debian Multimedia ok
+wget -c -q -P $dirDownload http://www.deb-multimedia.org/pool/main/d/deb-multimedia-keyring/deb-multimedia-keyring_2016.8.1_all.deb
+
+# Navegador Vivaldi ok
+wget -qO- https://repo.vivaldi.com/archive/linux_signing_key.pub | sudo apt-key add -
+
+}
+
+
+baixaPacotesTerceiros() {
+
+# Chrome ok
+wget -c -P $dirDownload https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+
+# Teamviewer
+wget -c -P $dirDownload https://download.teamviewer.com/download/linux/teamviewer_amd64.deb
+
+# Dropbox
+wget -c -P $dirDownload https://www.dropbox.com/download?dl=packages/ubuntu/dropbox_2020.03.04_amd64.deb -O dropbox.deb
+
+# Skype ok
+wget -c -P $dirDownload https://repo.skype.com/latest/skypeforlinux-64.deb
+
+# Debian Multimedia ok
+dpkg -i $dirDownload/deb-multimedia-keyring_2016.8.1_all.deb
+
+# Java 8.231
+# wget -c -P $dirDownload https://www.dropbox.com/s/eev6rk26e2h0z29/oracle-java8-jre_8u231_amd64.deb?dl=0 -O java.deb
+
+# ssh-chat
+#wget -c -P $dirDownload https://www.dropbox.com/s/mgc2qqpnmro0hwf/ssh-chat.1.8.2.deb?dl=0 -O ssh-chat.deb
+
+# Yed
+#wget -c -P $dirDownload https://www.dropbox.com/s/sqsflru08jejg16/yed.3.19.1.1.deb?dl=0 -O yed.deb
+
+# WPS Office ok
+nslookup kdl.cc.ksosoft.com
+wget -c -P $dirDownload http://wdl1.pcfg.cache.wpscdn.com/wpsdl/wpsoffice/download/linux/9505/wps-office_11.1.0.9505.XA_amd64.deb -O wps-office.deb
+
+# MegaSync
+wget -c -P $dirDownload https://mega.nz/linux/MEGAsync/Debian_10.0/amd64/megasync-Debian_10.0_amd64.deb
+wget -c -P $dirDownload https://mega.nz/linux/MEGAsync/Debian_10.0/amd64/nemo-megasync-Debian_10.0_amd64.deb
+
+# Draw.io
+wget -c -P $dirDownload https://github.com/jgraph/drawio-desktop/releases/download/v13.0.3/draw.io-amd64-13.0.3.deb -O draw.deb
+
+
+}
+
+
+instalaPacotesBaixados() {
+
+apt update
+cd $dirDownload
+gdebi --n google-chrome-stable_current_amd64.deb
+gdebi --n teamviewer_amd64.deb
+gdebi --n skypeforlinux-64.deb
+gdebi --n deb-multimedia-keyring_2016.8.1_all.deb
+#gdebi --n java.deb
+#gdebi --n ssh-chat.deb
+#gdebi --n yed.deb
+gdebi --n wps-office.deb
+gdebi --n megasync-Debian_10.0_amd64.deb
+gdebi --n nemo-megasync-Debian_10.0_amd64.deb
+gdebi --n draw.deb
+
+
+dpkg-deb -R dropbox.deb dir/
+sed -i 's/libpango1.0-0/libpango-1.0-0/g' dir/DEBIAN/control
+dpkg-deb -b dir/ dropbox-fixed.deb
+gdebi --n dropbox-fixed.deb
+
+
+}
+
+
+traducaoDicionarioWpsOffice() {
+
+# Tradução da interface
+cd /opt/kingsoft/wps-office/office6/mui && \
+wget https://github.com/timxx/wps-office-mui/raw/master/mui/pt_BR.7z && \
+7za x pt_BR.7z
+
+# Dicionário
+cd /opt/kingsoft/wps-office/office6/dicts/spellcheck && \
+wget sudo wget https://github.com/wps-community/wps_community_website/raw/master/root/download/dicts/pt_BR.zip && \
+unzip -v pt_BR.zip
+
+}
+
+ajustaModulos() {
+
+echo "" >> /etc/modules
+echo "# Modulo para montar VDI" >> /etc/modules
+echo "modprobe nbd max_part=16" >> /etc/modules
+
+}
+
+instalaPacotesTesting() {
+
+apt update
+
+pacotesTesting=(
+dia							# Diagramas
+dia-common						# Diagramas
+dia-rib-network					# Diagramas
+dia-shapes						# Diagramas
+qtqr							# Gera QrCode
+putty 							# Cliente SSH
+planner 						# Gerenciamento de projeto
+gimp 							# Editor de imagem
+gpaint 						# Editor de imagem
+transmission						# Cliente torrent
+wireshark						# Analisador de tráfego gráfico
+remmina						# Cliente vnc,rdp, spice, ssh
+uget							# Gerenciador de download
+gufw							# Firewall gráfico
+gedit							# Editor de texto
+htop							# Monitor de recursos
+iotop							# Monitor de I/O de disco
+gip							# Calculadora IP
+nixnote2						# Cliente Evernote
+gftp							# Cliente FTP
+xchat							# Cliente IRC
+cheese							# Programa webcan
+audacity						# Editor de áudio
+soundconverter						# Conversor de som
+kazam							# Grava tela
+youtube-dl						# Baixa áudio/vídeo do youtube
+baobab							# Analisador de disco
+gparted						# Particionador de disco
+lightdm-gtk-greeter-settings				# Editor de login 
+bleachbit						# Limpa sistema
+gnome-contacts						# Contatos google
+gnome-calendar						# Calendário google
+gnome-disk-utility					# Discos
+apt-file						# Biblioteca de pacotes
+signal-desktop						# Cliente mensagens
+spotify-client						# Cliente música
+firmware-linux						# Drivers
+firmware-linux-free					# Drivers
+firmware-linux-nonfree					# Drivers
+firmware-realtek					# Drivers
+firmware-atheros					# Drivers
+firmware-amd-graphics					# Drivers
+firmware-misc-nonfree					# Drivers
+catfish						# Catálogo dos arquivos no PC
+xfce4-terminal						# Terminal XFCE
+bmon							# Monitor de tráfego
+tilix							# Cliente multi-terminal
+playonlinux						# FrontEnd wine
+unzip							# Descompactador zip
+ttf-mscorefonts-installer				# Fontes MS
+nmap							# Analisador de portas
+ncdu							# Ocupação de disco
+hexedit						# Editor exadecimal de executáveis
+gftp							# Cliente FTP
+fail2ban						# Monitor de atividades/logins
+dnsutils						# Utilitário de consultas DNS
+dnsdiag						# Fornece dnseval benchmark DNS
+dirmngr						# Gerenciador de chaves (APT)
+cifs-utils						# Cliente Samba
+thunderbird-l10n-pt-br					# Tradução Thunderbird
+rcconf							# Gerencia inicialização do sistema
+rsync							# Backup
+tcpdump						# Análise de tráfego
+mtr							# Traceroute e ping
+vivaldi-stable						# Navegador
+arping							# Ping por ARP (MAC)
+qemu-kvm						# Virtualização
+libvirt-clients					# Virtualização
+libvirt-daemon-system					# Virtualização
+virt-manager						# Virtualização
+bridge-utils						# Virtualização
+libguestfs-tools					# Virtualização
+qemu-utils						# Virtualização
+persepolis						# Gerenciador de download
+geany							# IDE Shell Script
+keepassxc						# Gerenciador de senhas
+p7zip							# Compactador
+p7zip-rar						# Compactador
+dialog							# Caixas de opções para ShellScript
+python3-pip						# Google agenda desktop
+python3-setuptools					# Google agenda desktop
+python3-dateutil					# Google agenda desktop
+python3-oauth2client					# Google agenda desktop
+python3-googleapi					# Google agenda desktop
+timeshift						# Backup/restore sistema
+gnome-clocks						# Gestor de tempo
+openvpn						# Cliente VPN
+psensor						# Sensores do sistema
+tshark							# Análise de tráfego via terminal
+netdiscover						# Varredura de rede
+command-not-found					# Sugere pacote caso o comando não exista
+git							# cliente git
+shellcheck						# Análise de ShellScript
+fzf							# Busca comandos Control + R
+netstat-nat						# Mostra conexões NAT
+iptraf-ng						# Monitor de tráfego
+ntpdate						# Ajusta hora
+atop							# Statísticas host
+build-essential					# Base de compiladores
+stress							# Teste de hardware
+s-tui							# Teste de hardware
+poppler-utils						# pdftotext
+vnstat							# Tráfego do host
+vnstati						# Tráfego do host
+smartmontools						# Verificação do disco
+etherwake						# Wake on LAN
+smbclient						# Cliente samba
+nftables						# Firewall
+packit							# Criar pacotes para teses
+cockpit						# Gerenciador WEB
+cockpit-machines					# Gerenciador WEB
+testdisk						# Recuperar arquivos apagados
+gsmartcontrol						# Informações de disco
+bash-completion					# Auto complemento do bash
+telegram-desktop					# Cliente Telegram
+iftop							# Monitor de tráfego
+tcptrack						# Monitor de tráfego	
+cpu-x							# Informações de CPU e outros hardwares
+)
+
+apt -y install ${pacotesTesting[@]}
+
+}
+
+
+instalaNetAtop(){
+cd /opt
+wget https://www.atoptool.nl/download/netatop-3.1.tar.gz
+tar xvfz netatop-3.1.tar.gz
+rm -rf netatop-3.1.tar.gz
+cd netatop-3.1
+make
+make install
+
+}
+
+
+instalaPacotesUnstable() {
+
+pacotesUnstable=(
+libreoffice			# Pacote de escritório
+firefox			# Firefox
+firefox-l10n-pt-br		# Firefox - tradução
+virtualbox			# Virtualbox
+virtualbox-ext-pack		# Virtualbox Complementos
+torbrowser-launcher		# Navegador
+)
+
+apt -y install -t unstable ${pacotesUnstable[@]}
+
+# Ajusta Virtualbox
+adduser $usuario vboxusers
+
+}
+
+
+instalaCodecs() {
+
+codecs=(
+gstreamer1.0-plugins-base
+gstreamer1.0-plugins-good
+gstreamer1.0-plugins-ugly
+gstreamer1.0-plugins-bad
+ffmpeg
+sox
+twolame
+vorbis-tools
+lame
+faad
+mencoder
+w64codecs
+libdvdcss2
+vlc
+handbrake
+libdvd-pkg
+)
+
+apt -y install ${codecs[@]}
+
+}
+
+
+flatpak(){
+apt install flatpak
+flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+apt install gnome-software gnome-software-plugin-flatpak flatpak-xdg-utils xdg-desktop-portal
+
+}
+
+
+gputest(){
+
+# https://www.geeks3d.com/gputest/
+# exec: python gputest_gui.py
+apt install python-tk
+cd /tmp
+wget http://www.ozone3d.net/gputest/dl/GpuTest_Linux_x64_0.7.0.zip
+unzip GpuTest_Linux_x64_0.7.0.zip -d /opt/
+
+}
+
+
+atualizaTudo() {
+
+apt-file update
+update-command-not-found
+apt update
+apt -y upgrade
+apt -y full-upgrade
+apt -y dist-upgrade
+apt -y autoremove
+
+}
+
+
+removeJogos() {
+apt -y purge gnome-games
+apt -y autoremove 
+
+}
+
+
+corrigeDrivers() {
+# Corrigir problemas de atulização e falta de binários de hardwares proprietários.
+# Ex de log: W: Possible missing firmware /lib/firmware/i915/icl_dmc_ver1_09.bin for module i915
+
+cd /tmp
+
+git clone https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git
+cp linux-firmware/i915/icl_dmc_ver1_09.bin /lib/firmware/i915/
+cp linux-firmware/i915/tgl_dmc_ver2_04.bin /lib/firmware/i915/
+cp linux-firmware/i915/skl_huc_2.0.0.bin /lib/firmware/i915/
+cp linux-firmware/i915/bxt_huc_2.0.0.bin /lib/firmware/i915/
+cp linux-firmware/i915/kbl_huc_4.0.0.bin /lib/firmware/i915/
+cp linux-firmware/i915/glk_huc_4.0.0.bin /lib/firmware/i915/
+cp linux-firmware/i915/kbl_huc_4.0.0.bin /lib/firmware/i915/
+cp linux-firmware/i915/cml_huc_4.0.0.bin /lib/firmware/i915/
+cp linux-firmware/i915/cml_guc_33.0.0.bin /lib/firmware/i915/
+cp linux-firmware/i915/icl_huc_9.0.0.bin /lib/firmware/i915/
+cp linux-firmware/i915/ehl_huc_9.0.0.bin /lib/firmware/i915/
+cp linux-firmware/i915/ehl_guc_33.0.4.bin /lib/firmware/i915/
+cp linux-firmware/i915/tgl_huc_7.0.3.bin /lib/firmware/i915/
+cp linux-firmware/i915/tgl_guc_35.2.0.bin /lib/firmware/i915/
+cp linux-firmware/rtl_nic/rtl8125a-3.fw /lib/firmware/rtl_nic/rtl8125a-3.fw
+cp linux-firmware/rtl_nic/rtl8168fp-3.fw /lib/firmware/rtl_nic/rtl8168fp-3.fw
+update-initramfs -tu -k all
+
+}
+
+
+driverTplinkWifi(){
+# Driver de rede do TP-Link TL WN823N RTL8192EU USB
+
+cd /opt
+git clone https://github.com/sergioabrantesjunior/rtl8192eu-linux-driver.git
+dkms add rtl8192eu-linux-driver
+dkms build -m rtl8192eu/1.0
+dkms install rtl8192eu/1.0
+echo "blacklist rtl8xxxu" >/etc/modprobe.d/blacklist-rtl8xxxu.conf
+
+}
+
+
+ajustesSysctl(){
+
+cd /tmp
+sed -i 's/#net.ipv4.tcp_syncookies=1/net.ipv4.tcp_syncookies=1/g' /etc/sysctl.conf
+echo "" >> /etc/sysctl.conf
+echo "# Reduz o uso de SWAP" >> /etc/sysctl.conf
+echo "vm.swappiness=1" >> /etc/sysctl.conf
+echo "" >> /etc/sysctl.conf
+echo "# Erros de inotify no fail2ban" >> /etc/sysctl.conf
+echo "fs.inotify.max_queued_events=99999999" >> /etc/sysctl.conf
+echo "fs.inotify.max_user_watches=99999999" >> /etc/sysctl.conf
+echo "fs.inotify.max_user_instances=65535" >> /etc/sysctl.conf
+
+}
+
+ajustesSsh(){
+
+sed -i 's/#Port 22/Port 6622/g' /etc/ssh/sshd_config
+echo "" >> /etc/ssh/sshd_config
+echo "AllowUsers $usuario" >> /etc/ssh/sshd_config
+echo "DebianBanner no" >> /etc/ssh/sshd_config
+
+}
+
+limitaSu(){
+groupadd wheel
+adduser $usuario wheel
+sed -i 's/# auth       required   pam_wheel.so/ auth       required   pam_wheel.so/g' /etc/pam.d/su
+
+}
+
+instalaVncServer(){
+wget wget https://raw.githubusercontent.com/sergioabrantesjunior/vncServerDebian/master/vncServerDebian
+chmod u+x vncServerDebian
+./vncServerDebian
+
+}
+
+historicoInfinito(){ 
+echo "" >> /root/.bashrc
+echo "HISTSIZE=(some number less than 0)" >> /root/.bashrc
+echo "HISTFILESIZE=(some number less than 0)" >> /root/.bashrc
+echo "export HISTTIMEFORMAT="%d/%m/%y %T "" >> /root/.bashrc
+
+}
+
+fail2ban(){
+
+sed -i 's/port    = ssh/port    = 6622/g' /etc/fail2ban/jail.conf
+sed -i 's/port     = ssh/port     = 6622/g' /etc/fail2ban/jail.conf
+
+
+cat >> /etc/fail2ban/jail.d/scan.conf << EOF
+[scan]
+enabled   = true
+filter    = scan
+port      = all
+banaction = scan
+logpath   = /var/log/syslog
+findtime  = 1m
+maxretry  = 6
+bantime   = 900
+EOF
+
+cat >> /etc/fail2ban/action.d/scan.conf << EOF
+# Fail2Ban configuration file
+#
+# Author: Michael Gebetsroither
+#
+# This is for blocking whole hosts through blackhole routes.
+#
+# PRO:
+#   - Works on all kernel versions and as no compatibility problems (back to debian lenny and WAY further).
+#   - It's FAST for very large numbers of blocked ips.
+#   - It's FAST because it Blocks traffic before it enters common iptables chains used for filtering.
+#   - It's per host, ideal as action against ssh password bruteforcing to block further attack attempts.
+#   - No additional software required beside iproute/iproute2
+#
+# CON:
+#   - Blocking is per IP and NOT per service, but ideal as action against ssh password bruteforcing hosts
+
+[Definition]
+actionban   = ip route add <blocktype> <ip>
+actionunban = ip route del <blocktype> <ip>
+actioncheck =
+actionstart =
+actionstop =
+
+[Init]
+
+# Option:  blocktype
+# Note:    Type can be blackhole, unreachable and prohibit. Unreachable and prohibit correspond to the ICMP reject messages.
+# Values:  STRING
+blocktype = unreachable
+EOF
+
+cat >> /etc/fail2ban/filter.d/scan.conf << EOF
+[Definition]
+failregex = (.*)SCAN (.*) SRC=<HOST>
+ignoreregex =
+EOF
+
+}
+
+fzf(){
+echo "" >> /etc/profile
+echo "# Busca Control + R pacote fzf" >> /etc/profile
+echo "source /usr/share/doc/fzf/examples/key-bindings.bash" >> /etc/profile
+
+}
+
+
+executaTudo() {
+
+ajustaPath
+ajustaApt
+ajustaSources
+adicionai386
+pacotesBasicos
+baixaChavesPacotesTerceiros
+baixaPacotesTerceiros
+instalaPacotesBaixados
+traducaoDicionarioWpsOffice
+ajustaModulos
+instalaPacotesTesting
+instalaNetAtop
+instalaPacotesUnstable
+instalaCodecs
+flatpak
+atualizaTudo
+removeJogos
+corrigeDrivers
+driverTplinkWifi
+ajustesSysctl
+ajustesSsh
+limitaSu
+instalaVncServer
+historicoInfinito
+fail2ban
+fzf
+
+}
+
+executaTudo
