@@ -447,7 +447,7 @@ apt -y install ${codecs[@]}
 
 
 flatpak(){
-apt install flatpak
+apt -y install flatpak
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 apt install gnome-software gnome-software-plugin-flatpak flatpak-xdg-utils xdg-desktop-portal
 
