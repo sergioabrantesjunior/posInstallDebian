@@ -382,6 +382,8 @@ telegram-desktop					# Cliente Telegram
 iftop							# Monitor de tráfego
 tcptrack						# Monitor de tráfego	
 cpu-x							# Informações de CPU e outros hardwares
+rdfind							# Identifica arquivos duplicados
+libimage-exiftool-perl					# Organiza fotos em pastas
 )
 
 apt -y install ${pacotesTesting[@]}
