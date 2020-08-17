@@ -266,16 +266,16 @@ apt update
 pacotesTesting=(
 dia							# Diagramas
 dia-common						# Diagramas
-dia-rib-network					# Diagramas
+dia-rib-network						# Diagramas
 dia-shapes						# Diagramas
 qtqr							# Gera QrCode
 putty 							# Cliente SSH
 planner 						# Gerenciamento de projeto
 gimp 							# Editor de imagem
-gpaint 						# Editor de imagem
+gpaint 							# Editor de imagem
 transmission						# Cliente torrent
 wireshark						# Analisador de tráfego gráfico
-remmina						# Cliente vnc,rdp, spice, ssh
+remmina							# Cliente vnc,rdp, spice, ssh
 uget							# Gerenciador de download
 gufw							# Firewall gráfico
 gedit							# Editor de texto
@@ -291,7 +291,7 @@ soundconverter						# Conversor de som
 kazam							# Grava tela
 youtube-dl						# Baixa áudio/vídeo do youtube
 baobab							# Analisador de disco
-gparted						# Particionador de disco
+gparted							# Particionador de disco
 lightdm-gtk-greeter-settings				# Editor de login 
 bleachbit						# Limpa sistema
 gnome-contacts						# Contatos google
@@ -307,7 +307,7 @@ firmware-realtek					# Drivers
 firmware-atheros					# Drivers
 firmware-amd-graphics					# Drivers
 firmware-misc-nonfree					# Drivers
-catfish						# Catálogo dos arquivos no PC
+catfish							# Catálogo dos arquivos no PC
 xfce4-terminal						# Terminal XFCE
 bmon							# Monitor de tráfego
 tilix							# Cliente multi-terminal
@@ -316,22 +316,22 @@ unzip							# Descompactador zip
 ttf-mscorefonts-installer				# Fontes MS
 nmap							# Analisador de portas
 ncdu							# Ocupação de disco
-hexedit						# Editor exadecimal de executáveis
+hexedit							# Editor exadecimal de executáveis
 gftp							# Cliente FTP
 fail2ban						# Monitor de atividades/logins
 dnsutils						# Utilitário de consultas DNS
-dnsdiag						# Fornece dnseval benchmark DNS
-dirmngr						# Gerenciador de chaves (APT)
+dnsdiag							# Fornece dnseval benchmark DNS
+dirmngr							# Gerenciador de chaves (APT)
 cifs-utils						# Cliente Samba
 thunderbird-l10n-pt-br					# Tradução Thunderbird
 rcconf							# Gerencia inicialização do sistema
 rsync							# Backup
-tcpdump						# Análise de tráfego
+tcpdump							# Análise de tráfego
 mtr							# Traceroute e ping
 vivaldi-stable						# Navegador
 arping							# Ping por ARP (MAC)
 qemu-kvm						# Virtualização
-libvirt-clients					# Virtualização
+libvirt-clients						# Virtualização
 libvirt-daemon-system					# Virtualização
 virt-manager						# Virtualização
 bridge-utils						# Virtualização
@@ -350,8 +350,8 @@ python3-oauth2client					# Google agenda desktop
 python3-googleapi					# Google agenda desktop
 timeshift						# Backup/restore sistema
 gnome-clocks						# Gestor de tempo
-openvpn						# Cliente VPN
-psensor						# Sensores do sistema
+openvpn							# Cliente VPN
+psensor							# Sensores do sistema
 tshark							# Análise de tráfego via terminal
 netdiscover						# Varredura de rede
 command-not-found					# Sugere pacote caso o comando não exista
@@ -360,24 +360,24 @@ shellcheck						# Análise de ShellScript
 fzf							# Busca comandos Control + R
 netstat-nat						# Mostra conexões NAT
 iptraf-ng						# Monitor de tráfego
-ntpdate						# Ajusta hora
+ntpdate							# Ajusta hora
 atop							# Statísticas host
-build-essential					# Base de compiladores
+build-essential						# Base de compiladores
 stress							# Teste de hardware
 s-tui							# Teste de hardware
 poppler-utils						# pdftotext
 vnstat							# Tráfego do host
-vnstati						# Tráfego do host
+vnstati							# Tráfego do host
 smartmontools						# Verificação do disco
 etherwake						# Wake on LAN
 smbclient						# Cliente samba
 nftables						# Firewall
 packit							# Criar pacotes para teses
-cockpit						# Gerenciador WEB
+cockpit							# Gerenciador WEB
 cockpit-machines					# Gerenciador WEB
 testdisk						# Recuperar arquivos apagados
 gsmartcontrol						# Informações de disco
-bash-completion					# Auto complemento do bash
+bash-completion						# Auto complemento do bash
 telegram-desktop					# Cliente Telegram
 iftop							# Monitor de tráfego
 tcptrack						# Monitor de tráfego	
@@ -385,6 +385,9 @@ cpu-x							# Informações de CPU e outros hardwares
 rdfind							# Identifica arquivos duplicados
 libimage-exiftool-perl					# Organiza fotos em pastas
 freeplane						# Mapa mental
+openvpn							# VPN
+network-manager-openvpn					# VPN pelo network-manager
+network-manager-openvpn-gnome				# VPN pelo network-manager
 )
 
 apt -y install ${pacotesTesting[@]}
