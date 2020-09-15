@@ -375,6 +375,7 @@ nftables						# Firewall
 packit							# Criar pacotes para teses
 cockpit							# Gerenciador WEB
 cockpit-machines					# Gerenciador WEB
+cockpit-dashboard					# Gerenciador WEB
 testdisk						# Recuperar arquivos apagados
 gsmartcontrol						# Informações de disco
 bash-completion						# Auto complemento do bash
