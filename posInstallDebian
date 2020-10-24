@@ -645,6 +645,22 @@ echo "source /usr/share/doc/fzf/examples/key-bindings.bash" >> /etc/profile
 
 }
 
+bashCompletion(){
+# Tanks Jeferson
+
+LINHA_1=$(grep -A7 -n "enable bash completion in interactive shells" /etc/bash.bashrc \
+| grep -v "enable bash completion in interactive shells" \
+| head -1 \
+| cut -d"-" -f1)
+
+LINHA_N=$(grep -A7 -n "enable bash completion in interactive shells" /etc/bash.bashrc \
+| grep -v "enable bash completion in interactive shells" \
+| tail -1 \
+| cut -d"-" -f1)
+
+sed -i "$LINHA_1,$LINHA_N{s/#//}" /etc/bash.bashrc
+
+}
 
 executaTudo() {
 
@@ -674,6 +690,7 @@ instalaVncServer
 historicoInfinito
 fail2ban
 fzf
+bashCompletion
 
 }
 
