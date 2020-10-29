@@ -383,6 +383,7 @@ telegram-desktop					# Cliente Telegram
 iftop							# Monitor de tráfego
 tcptrack						# Monitor de tráfego	
 cpu-x							# Informações de CPU e outros hardwares
+hw-probe						# Informação de wardware que gera link web
 rdfind							# Identifica arquivos duplicados
 libimage-exiftool-perl					# Organiza fotos em pastas
 freeplane						# Mapa mental
