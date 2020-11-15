@@ -390,6 +390,7 @@ freeplane						# Mapa mental
 openvpn							# VPN
 network-manager-openvpn					# VPN pelo network-manager
 network-manager-openvpn-gnome				# VPN pelo network-manager
+kdiff3							# Compara arquivos
 )
 
 apt -y install ${pacotesTesting[@]}
