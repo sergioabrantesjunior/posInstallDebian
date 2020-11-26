@@ -273,6 +273,7 @@ putty 							# Cliente SSH
 planner 						# Gerenciamento de projeto
 gimp 							# Editor de imagem
 gpaint 							# Editor de imagem
+kolourpaint						# Editor de imagem
 transmission						# Cliente torrent
 wireshark						# Analisador de tráfego gráfico
 remmina							# Cliente vnc,rdp, spice, ssh
@@ -414,7 +415,7 @@ instalaPacotesUnstable() {
 
 pacotesUnstable=(
 libreoffice			# Pacote de escritório
-firefox			# Firefox
+firefox				# Firefox
 firefox-l10n-pt-br		# Firefox - tradução
 virtualbox			# Virtualbox
 virtualbox-ext-pack		# Virtualbox Complementos
