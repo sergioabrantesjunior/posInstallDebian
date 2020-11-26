@@ -107,20 +107,23 @@ deb http://deb.debian.org/debian/ unstable main contrib non-free
 # Debian Experimental
 deb http://deb.debian.org/debian/ experimental main contrib non-free
 
-# Spotify ok
+# Spotify
 deb http://repository.spotify.com stable non-free
 
-# Signal ok
+# Signal
 deb [arch=amd64] https://updates.signal.org/desktop/apt xenial main
 
-# Palemoon ok
+# Palemoon
 # deb http://download.opensuse.org/repositories/home:/stevenpusser/Debian_Testing/ /
 
-# Debian multimedia ok
+# Debian multimedia
 deb https://www.deb-multimedia.org testing main non-free
 
-# Navegador Vivaldi ok
+# Navegador Vivaldi
 deb https://repo.vivaldi.com/archive/deb/ stable main
+
+# Anydesk
+deb http://deb.anydesk.com/ all main
 EOF
 
 }
@@ -152,20 +155,23 @@ baixaChavesPacotesTerceiros() {
 
 cd /tmp
 
-# Signal ok
+# Signal
 curl -s https://updates.signal.org/desktop/apt/keys.asc | sudo apt-key add -
 
-# Palemoon ok
+# Palemoon
 #wget -nv https://download.opensuse.org/repositories/home:stevenpusser/Debian_Testing/Release.key -O "/etc/apt/trusted.gpg.d/home:stevenpusser.asc"
 
-# Spotify ok
+# Spotify
 curl -sS https://download.spotify.com/debian/pubkey_0D811D58.gpg | sudo apt-key add -
 
-# Debian Multimedia ok
+# Debian Multimedia
 wget -c -q -P $dirDownload http://www.deb-multimedia.org/pool/main/d/deb-multimedia-keyring/deb-multimedia-keyring_2016.8.1_all.deb
 
-# Navegador Vivaldi ok
+# Navegador Vivaldi
 wget -qO- https://repo.vivaldi.com/archive/linux_signing_key.pub | sudo apt-key add -
+
+# Anydesk
+wget -qO - https://keys.anydesk.com/repos/DEB-GPG-KEY | apt-key add -
 
 }
 
