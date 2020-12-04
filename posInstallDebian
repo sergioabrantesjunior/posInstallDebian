@@ -671,6 +671,15 @@ sed -i "$LINHA_1,$LINHA_N{s/#//}" /etc/bash.bashrc
 
 }
 
+hdSentinel() {
+cd /tmp
+wget https://www.hdsentinel.com/hdslin/hdsentinel_gui64bit.tar.xz
+tar xvf hdsentinel_gui64bit.tar.xz
+cd HDSentinel_GUI
+./install.sh
+
+}
+
 executaTudo() {
 
 ajustaPath
@@ -688,6 +697,7 @@ instalaNetAtop
 instalaPacotesUnstable
 instalaCodecs
 flatpak
+gputest
 atualizaTudo
 removeJogos
 corrigeDrivers
@@ -700,6 +710,7 @@ historicoInfinito
 fail2ban
 fzf
 bashCompletion
+hdSentinel
 
 }
 
