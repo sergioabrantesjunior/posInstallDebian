@@ -399,6 +399,7 @@ network-manager-openvpn					# VPN pelo network-manager
 network-manager-openvpn-gnome				# VPN pelo network-manager
 kdiff3							# Compara arquivos
 redshift						# Applet Cinnamon
+gnome-todo						# Gerenciador de tarefas diárias
 )
 
 apt -y install ${pacotesTesting[@]}
