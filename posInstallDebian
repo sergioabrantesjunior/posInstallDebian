@@ -400,6 +400,7 @@ network-manager-openvpn-gnome				# VPN pelo network-manager
 kdiff3							# Compara arquivos
 redshift						# Applet Cinnamon
 gnome-todo						# Gerenciador de tarefas diárias
+barrier							# Compartilhamento de teclado e mouse em dois PCs diferentes
 )
 
 apt -y install ${pacotesTesting[@]}
