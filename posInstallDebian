@@ -373,6 +373,7 @@ build-essential						# Base de compiladores
 stress							# Teste de hardware
 s-tui							# Teste de hardware
 poppler-utils						# pdftotext
+pdfarranger						# Editor de PDF
 vnstat							# Tráfego do host
 vnstati							# Tráfego do host
 smartmontools						# Verificação do disco
