@@ -404,6 +404,7 @@ redshift						# Applet Cinnamon
 gnome-todo						# Gerenciador de tarefas diárias
 barrier							# Compartilhamento de teclado e mouse em dois PCs diferentes
 easyssh							# Gerenciador de conexões SSH
+peek							# Gera gif da área de trabalho
 )
 
 apt -y install ${pacotesTesting[@]}
