@@ -405,6 +405,8 @@ gnome-todo						# Gerenciador de tarefas diárias
 barrier							# Compartilhamento de teclado e mouse em dois PCs diferentes
 easyssh							# Gerenciador de conexões SSH
 peek							# Gera gif da área de trabalho
+tmate							# Compartilhamento de terminal remoto
+tmux							# Terminal com acessos simultâneos
 )
 
 apt -y install ${pacotesTesting[@]}
