@@ -407,6 +407,7 @@ easyssh							# Gerenciador de conexões SSH
 peek							# Gera gif da área de trabalho
 tmate							# Compartilhamento de terminal remoto
 tmux							# Terminal com acessos simultâneos
+# video trimmer						# Cortar fideo facil (flatpak)
 )
 
 apt -y install ${pacotesTesting[@]}
