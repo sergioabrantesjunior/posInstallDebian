@@ -408,6 +408,7 @@ peek							# Gera gif da área de trabalho
 tmate							# Compartilhamento de terminal remoto
 tmux							# Terminal com acessos simultâneos
 # video trimmer						# Cortar fideo facil (flatpak)
+gnome-nettool						# Canivete de ferramentas de rede
 )
 
 apt -y install ${pacotesTesting[@]}
